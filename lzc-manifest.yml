@@ -1,0 +1,139 @@
+application:
+  subdomain: glpi
+  routes:
+    - /=http://glpi.cloud.lazycat.app.glpi.lzcapp:80
+  health_check:
+    test_url: http://glpi.cloud.lazycat.app.glpi.lzcapp:80/
+    start_period: 900s
+  injects:
+    - id: lazycat-file-bridge
+      'on': request
+      when:
+        - /__lazycat_file_bridge/*
+      do:
+        - src: |
+            const bridgePrefix = "/__lazycat_file_bridge";
+            const requestHost = String(ctx.request.host || "")
+              .split(":")[0]
+              .toLowerCase();
+            const firstDot = requestHost.indexOf(".");
+            const method = String(ctx.request.method || "").toUpperCase();
+
+            if (
+              firstDot <= 0 ||
+              !requestHost.endsWith(".heiyu.space") ||
+              !["GET", "HEAD", "PUT"].includes(method)
+            ) {
+              ctx.response.send(
+                ["GET", "HEAD", "PUT"].includes(method) ? 400 : 405,
+                "Invalid LazyCat file bridge request",
+              );
+              return;
+            }
+
+            const boxDomain = requestHost.slice(firstDot + 1);
+            const fileOrigin = "https://file." + boxDomain;
+            const targetPath =
+              "/files/home" + ctx.request.path.slice(bridgePrefix.length);
+
+            ctx.headers.del("Origin");
+            ctx.headers.del("Referer");
+            ctx.proxy.to(fileOrigin, {
+              path: targetPath,
+              query: ctx.request.raw_query,
+              use_target_host: true,
+              timeout_ms: 120000,
+              on_fail: "error",
+            });
+    - id: open-save-chooser
+      'on': browser
+      when:
+        - /*
+      do:
+        - src: >-
+            file:///lzcapp/pkg/content/lazycat-injects/lzc-file-chooser-inject.js
+          params:
+            diskRoot: /_lzc/files/home
+            fileBridgeRoot: /__lazycat_file_bridge
+            fallbackMime: application/octet-stream
+            locale: auto
+            hooks:
+              fileSystemAccess: true
+              fileInput: true
+              downloadAnchor: true
+    - id: lazycat-auto-login
+      'on': browser
+      auth_required: false
+      when:
+        - /*
+      do:
+        - src: file:///lzcapp/pkg/content/auto-login.js
+services:
+  glpi:
+    image: registry.lazycat.cloud/wans/wans/glpi-patched-v3:94d0b004fb3f78ee
+    setup_script: |
+      chown -R 33:33 /var/glpi
+      (
+        DESIRED_URL="https://${LAZYCAT_APP_DOMAIN}"
+        DESIRED_LANG="zh_CN"
+        for i in $(seq 1 360); do
+          [ -f /var/glpi/config/.setup_done ] && break
+          sleep 5
+        done
+        cd /var/www/glpi 2>/dev/null || exit 0
+        # 直接读 GLPI 自己的 DB 配置取值，不走 console（console 会因 root 告警/装载慢而拖时间）
+        read_cfg() {
+          php -r '$c=@include "/var/glpi/config/config_db.php"; if(!is_array($c)) return; $m=@new mysqli($c["dbhost"],$c["dbuser"],$c["dbpassword"],$c["dbdefault"]); if($m->connect_errno) return; $r=$m->query("SELECT value FROM glpi_configs WHERE name=\"".$argv[1]."\""); if($r && $row=$r->fetch_row()) echo $row[0];' -- "$1" 2>/dev/null
+        }
+        # 前 10 分钟每 15 秒复核一次：数据库自愈后 GLPI 会自己重装，配置会漂回出厂值
+        for i in $(seq 1 40); do
+          cur_url=$(read_cfg url_base)
+          if [ "$cur_url" != "$DESIRED_URL" ]; then
+            php bin/console --allow-superuser config:set url_base "$DESIRED_URL" >/dev/null 2>&1 \
+              && echo "[glpi-tune] url_base -> $DESIRED_URL（原值: ${cur_url:-未知}）"
+          fi
+          cur_lang=$(read_cfg language)
+          if [ "$cur_lang" != "$DESIRED_LANG" ]; then
+            php bin/console --allow-superuser config:set language "$DESIRED_LANG" >/dev/null 2>&1 \
+              && echo "[glpi-tune] language -> $DESIRED_LANG（原值: ${cur_lang:-未知}）"
+          fi
+          sleep 15
+        done
+        cur_url=$(read_cfg url_base); cur_lang=$(read_cfg language)
+        echo "[glpi-tune] 复核: url_base=${cur_url:-未知} language=${cur_lang:-未知}"
+        chown -R 33:33 /var/glpi 2>/dev/null || true
+      ) &
+    depends_on:
+      - db
+    binds:
+      - /lzcapp/var/glpi/glpi-data:/var/glpi
+    environment:
+      - TZ=Asia/Shanghai
+      - GLPI_DB_HOST=db.cloud.lazycat.app.glpi.lzcapp
+      - GLPI_DB_PORT=3306
+      - GLPI_DB_NAME=glpi
+      - GLPI_DB_USER=glpi
+      - GLPI_DB_PASSWORD=Glpi@Lazy2026!
+      - GLPI_LANG=zh_CN
+      - GLPI_TIMEZONE=Asia/Shanghai
+      - GLPI_CRONTAB_ENABLED=true
+  db:
+    image: registry.lazycat.cloud/wans/library/mysql:28274ecc0bce1eff
+    setup_script: |
+      /bin/sh /lzcapp/pkg/content/db-guard.sh
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - mysqladmin ping -h 127.0.0.1 -uglpi -pGlpi@Lazy2026! || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 60
+      start_period: 600s
+    binds:
+      - /lzcapp/var/glpi/mysql-data:/var/lib/mysql
+    environment:
+      - TZ=Asia/Shanghai
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=glpi
+      - MYSQL_USER=glpi
+      - MYSQL_PASSWORD=Glpi@Lazy2026!
