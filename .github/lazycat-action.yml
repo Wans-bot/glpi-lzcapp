@@ -23,7 +23,7 @@ images:
     service: glpi
     source: docker.io/glpi/glpi
     channel: stable
-    tag_regex: '^\d+\.\d+\.\d+$'
+    tag_regex: '^11\.\d+\.\d+$'   # 锁在 11.x：12.0.0 属大版本，需人工评估后再放开
     sort: semver
     delivery:
       mode: lazycat
