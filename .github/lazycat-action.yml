@@ -11,15 +11,30 @@ update:
   strategy: publish
   allow_downgrade: false
   version_source:
-    type: git   # 自建/无上游镜像：版本由本仓库 tag 决定
+    type: image
+    image: app
 
 build:
   run_buildscript: false
 
-images: []
+images:
+  - id: app
+    target: service
+    service: glpi
+    source: docker.io/glpi/glpi
+    channel: stable
+    tag_regex: '^\d+\.\d+\.\d+$'
+    sort: semver
+    delivery:
+      mode: lazycat
 
 stores:
   official:
-    enabled: false   # 黑名单应用，禁止提交官方商店
+    enabled: true
+    skip_if_version_exists: true
+    create_if_missing: true
+    changelog_locales:
+      - zh-CN
+      - en-US
   private:
     enabled: false
