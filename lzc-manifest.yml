@@ -70,7 +70,8 @@ application:
         - src: file:///lzcapp/pkg/content/auto-login.js
 services:
   glpi:
-    image: registry.lazycat.cloud/wans/wans/glpi-patched-v3:94d0b004fb3f78ee
+    # upstream: docker.io/glpi/glpi:11.0.11
+    image: registry.lazycat.cloud/wans/glpi/glpi:aaae8c37a4fb7efb
     setup_script: |
       chown -R 33:33 /var/glpi
       (

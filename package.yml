@@ -1,5 +1,5 @@
 package: cloud.lazycat.app.glpi
-version: 11.0.11-10
+version: 11.0.11
 name: GLPI
 description: 开源 IT 资产与 ITIL 服务台管理平台（资产管理/工单/知识库/许可证追踪）
 author: LazyMonitor
@@ -26,14 +26,12 @@ locales:
 
       ## 首次打开要等一会儿
 
-      第一次安装后打开，页面会先显示「GLPI 正在初始化」，此时后台正在建库（约 400 张表）。通常 1~3 分钟，最多约 5
-      分钟，完成后页面会自动跳到控制台。期间不要反复重启应用。
+      第一次安装后打开，页面会先显示「GLPI 正在初始化」，此时后台正在建库（约 400 张表）。通常 1~3 分钟，最多约 5 分钟，完成后页面会自动跳到控制台。期间不要反复重启应用。
 
 
       ## 开始使用
 
-      1.
-      打开应用即进入「中央控制台」（仪表板）。首次安装自带一份演示数据，页面上有「你正在查看演示数据」的提示条，点「停用演示」即可清空，换成自己的数据。
+      1. 打开应用即进入「中央控制台」（仪表板）。首次安装自带一份演示数据，页面上有「你正在查看演示数据」的提示条，点「停用演示」即可清空，换成自己的数据。
 
       2. 先做基础配置：管理 → 实体、地点、用户；按部门用「实体」隔离权限。
 
@@ -41,8 +39,7 @@ locales:
 
       4. 报修与工单：协助 → 工单 → 新增，可关联资产、指派工程师、设置 SLA 与截止时间。
 
-      5. 上传附件、导出 CSV、下载备份时，文件选择器会弹出「网盘文件 /
-      本地文件」两个来源，可直接把微服网盘里的文件读进来，也能把导出结果存回网盘。
+      5. 上传附件、导出 CSV、下载备份时，文件选择器会弹出「网盘文件 / 本地文件」两个来源，可直接把微服网盘里的文件读进来，也能把导出结果存回网盘。
 
 
       ## 场景示例
@@ -77,8 +74,7 @@ locales:
   en-US:
     name: GLPI
     description: >-
-      Open-source IT asset and ITIL service desk platform with asset inventory,
-      ticketing, knowledge base, license tracking and reports
+      Open-source IT asset and ITIL service desk platform with asset inventory, ticketing, knowledge base, license tracking and reports
     usage: >-
       ## Sign-in
 
@@ -86,80 +82,53 @@ locales:
 
       - Initial password: glpi
 
-      (Opening the app signs you in automatically. Change the default password
-      right after the first sign-in — GLPI keeps warning about it.)
+      (Opening the app signs you in automatically. Change the default password right after the first sign-in — GLPI keeps warning about it.)
 
 
       ## The first start takes a while
 
-      On a fresh installation the page first shows "GLPI is initializing" while
-      the database is created (about 400 tables). This usually takes 1-3 minutes
-      (up to roughly 5 on a slow machine). The page then switches to the
-      dashboard by itself. Do not restart the app repeatedly while it is
-      initializing.
+      On a fresh installation the page first shows "GLPI is initializing" while the database is created (about 400 tables). This usually takes 1-3 minutes (up to roughly 5 on a slow machine). The page then switches to the dashboard by itself. Do not restart the app repeatedly while it is initializing.
 
 
       ## Getting started
 
-      1. Opening the app lands on the central dashboard. A fresh install ships
-      with demonstration data; use the "Disable demonstration" button to drop it
-      and start with your own records.
+      1. Opening the app lands on the central dashboard. A fresh install ships with demonstration data; use the "Disable demonstration" button to drop it and start with your own records.
 
-      2. Configure the basics first: Administration -> Entities, Locations,
-      Users. Use Entities to separate departments and scope permissions.
+      2. Configure the basics first: Administration -> Entities, Locations, Users. Use Entities to separate departments and scope permissions.
 
-      3. Register assets: Assets -> Computers -> Add, filling in name, status,
-      location and user. Network devices, printers, software and licenses live
-      in the same menu.
+      3. Register assets: Assets -> Computers -> Add, filling in name, status, location and user. Network devices, printers, software and licenses live in the same menu.
 
-      4. Tickets: Assistance -> Tickets -> Add. Link them to assets, assign an
-      engineer, set SLA and due dates.
+      4. Tickets: Assistance -> Tickets -> Add. Link them to assets, assign an engineer, set SLA and due dates.
 
-      5. When you upload attachments, export CSV or download backups, the file
-      picker offers "LazyCat drive / Local file", so files can be read from and
-      written back to the LazyCat drive.
+      5. When you upload attachments, export CSV or download backups, the file picker offers "LazyCat drive / Local file", so files can be read from and written back to the LazyCat drive.
 
 
       ## Example use cases
 
-      - A small-team IT ledger: record laptops, printers and monitors, and see
-      who uses what and when it was bought.
+      - A small-team IT ledger: record laptops, printers and monitors, and see who uses what and when it was bought.
 
-      - Ticket workflow: an employee files a ticket, a manager assigns it, the
-      engineer records the fix, and the ticket is closed with a full history.
+      - Ticket workflow: an employee files a ticket, a manager assigns it, the engineer records the fix, and the ticket is closed with a full history.
 
-      - Licenses and contracts: attach software licenses and maintenance
-      contracts to the assets they cover and handle them from the reminders list
-      before they expire.
+      - Licenses and contracts: attach software licenses and maintenance contracts to the assets they cover and handle them from the reminders list before they expire.
 
 
       ## Tips
 
-      - The dashboard is drag-and-drop: add widgets with the "+" button,
-      rearrange them in edit mode. Every user can keep their own layout.
+      - The dashboard is drag-and-drop: add widgets with the "+" button, rearrange them in edit mode. Every user can keep their own layout.
 
-      - Bulk import: Administration -> Data injection / CSV import, so you do
-      not have to type hundreds of devices one by one.
+      - Bulk import: Administration -> Data injection / CSV import, so you do not have to type hundreds of devices one by one.
 
-      - Ticket templates: Assistance -> Templates. Turn frequent requests
-      (replace toner, create account) into templates that prefill the form.
+      - Ticket templates: Assistance -> Templates. Turn frequent requests (replace toner, create account) into templates that prefill the form.
 
-      - Backup: Administration -> Maintenance -> Backup creates GLPI's own SQL
-      dump. The application's data directory is also covered by the LazyCat
-      backup.
+      - Backup: Administration -> Maintenance -> Backup creates GLPI's own SQL dump. The application's data directory is also covered by the LazyCat backup.
 
 
       ## FAQ
 
-      - "Initializing" for more than 10 minutes: restart the app once from the
-      app manager. If it still does not come up, reinstall it — the database
-      layer repairs itself on start, which is safe while the instance is still
-      fresh.
+      - "Initializing" for more than 10 minutes: restart the app once from the app manager. If it still does not come up, reinstall it — the database layer repairs itself on start, which is safe while the instance is still fresh.
 
-      - Forgot the password: an administrator can reset any user in
-      Administration -> Users.
+      - Forgot the password: an administrator can reset any user in Administration -> Users.
 
       - Interface language: Administration -> Setup -> General -> Language.
 
-      - No notification e-mails until Administration -> Notifications -> Mail
-      server is configured.
+      - No notification e-mails until Administration -> Notifications -> Mail server is configured.
