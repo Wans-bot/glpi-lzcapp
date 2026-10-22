@@ -35,6 +35,5 @@ stores:
     create_if_missing: true
     changelog_locales:
       - zh-CN
-      - en-US
   private:
     enabled: false
