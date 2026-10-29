@@ -1,5 +1,5 @@
 package: cloud.lazycat.app.glpi
-version: 11.0.11
+version: 11.0.12
 name: GLPI
 description: 开源 IT 资产与 ITIL 服务台管理平台（资产管理/工单/知识库/许可证追踪）
 author: LazyMonitor
